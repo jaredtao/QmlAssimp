@@ -1,10 +1,14 @@
-attribute highp vec4 qt_Vertex;
-attribute highp vec4 qt_MultiTexCoord0;
-uniform highp mat4 qt_ModelViewProjectionMatrix;
-varying highp vec4 qt_TexCoord0;
+#version 330 core
+layout (location = 0) in vec3 position;
+layout (location = 1) in vec3 normal;
+layout (location = 2) in vec2 texCoords;
+out vec2 TexCoords;
 
-void main(void)
+uniform mat4 model;
+uniform mat4 view;
+uniform mat4 projection;
+void main()
 {
-    gl_Position = qt_ModelViewProjectionMatrix * qt_Vertex;
-    qt_TexCoord0 = qt_MultiTexCoord0;
+    TexCoords = texCoords;
+    gl_Position = projection * view * model * vec4(position, 1.0f);
 }

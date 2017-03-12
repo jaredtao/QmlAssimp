@@ -7,7 +7,7 @@ Item::Item(QQuickItem *parent): QQuickFramebufferObject(parent)
     m_fps = 60;
 }
 
-void Item::timerEvent(QTimerEvent *event)
+void Item::timerEvent(QTimerEvent *)
 {
     update();
 }

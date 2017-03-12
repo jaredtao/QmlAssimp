@@ -15,7 +15,7 @@ public:
     void setFps(qreal v);
 
     explicit Item(QQuickItem *parent = 0);
-    void timerEvent(QTimerEvent *event) override;
+    void timerEvent(QTimerEvent *) override;
 
     // QQmlParserStatus interface
 public:

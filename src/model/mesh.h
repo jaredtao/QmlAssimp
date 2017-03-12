@@ -5,12 +5,12 @@
 #include <QVector3D>
 #include <QVector2D>
 #include <QString>
-
-#include "assimp/Importer.hpp"
+#include <QOpenGLShaderProgram>
+#include "assimp/types.h"
 #include "glfunc.h"
 struct Vertex{
     QVector3D Position;
-    QVector2D Normal;
+    QVector3D Normal;
     QVector2D TexCoords;
 };
 struct Texture{
@@ -18,17 +18,20 @@ struct Texture{
     QString type;
     aiString path;
 };
-class Mesh : protected GLFUNC
+class Mesh : public GLFUNC
 {
 public:
     QVector<Vertex> vertices;
-    QVector<uint> indices;
+    QVector<GLuint> indices;
     QVector<Texture> textures;
-
+public:
     Mesh( const   QVector<Vertex> & vertices,
-          const QVector<uint> & indices,
+          const QVector<GLuint> & indices,
           const QVector<Texture> & textures);
-    void Draw();
+//    Mesh(const Mesh & other) = default;
+//    Mesh & operator= (const Mesh & other) = default;
+
+    void Draw(const QOpenGLShaderProgram & program);
 private:
     GLuint VAO, VBO, EBO;
     void setupMesh();

@@ -3,7 +3,7 @@
 #include <QOpenGLFramebufferObjectFormat>
 ItemRenderer::ItemRenderer()
 {
-    m_render.Init();
+
 }
 
 
@@ -17,6 +17,7 @@ QOpenGLFramebufferObject *ItemRenderer::createFramebufferObject(const QSize &siz
     QOpenGLFramebufferObjectFormat format;
     format.setAttachment(QOpenGLFramebufferObject::CombinedDepthStencil);
     format.setSamples(4);
+    m_render.Init(size);
     return new QOpenGLFramebufferObject(size, format);
 }
 

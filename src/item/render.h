@@ -7,12 +7,16 @@
 #include<QOpenGLShaderProgram>
 #include <QOpenGLDebugLogger>
 #include <QOpenGLDebugMessage>
+#include <QObject>
 
-class Render : protected GLFUNC
+#include "model/model.h"
+class Render : public QObject,  protected GLFUNC
 {
+    Q_OBJECT
 public:
-    Render();
-    void Init();
+    Render(QObject *parent = nullptr);
+    ~Render();
+    void Init(QSize);
     void Paint();
     qreal GetFPS();
 private:
@@ -24,12 +28,13 @@ private:
     void updateFPS(qreal );
 private:
     QOpenGLShaderProgram m_program;
-
+    Model *m_model;
     QMatrix4x4 mModelMatrix;
     QMatrix4x4 mViewMatrix;
     QMatrix4x4 mProjectionMatrix;
 
-    qreal fps;
+    QSize m_size;
+    qreal m_fps;
 #ifdef USE_GL_DEBUGGER
     QOpenGLDebugLogger logger;
 #endif
