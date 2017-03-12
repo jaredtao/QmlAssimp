@@ -3,7 +3,6 @@
 #include <QOpenGLFramebufferObjectFormat>
 ItemRenderer::ItemRenderer()
 {
-
 }
 
 

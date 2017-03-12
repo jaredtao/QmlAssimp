@@ -28,8 +28,8 @@ public:
     Mesh( const   QVector<Vertex> & vertices,
           const QVector<GLuint> & indices,
           const QVector<Texture> & textures);
-//    Mesh(const Mesh & other) = default;
-//    Mesh & operator= (const Mesh & other) = default;
+    Mesh(const Mesh & other);
+    Mesh & operator= (const Mesh & other);
 
     void Draw(const QOpenGLShaderProgram & program);
 private:

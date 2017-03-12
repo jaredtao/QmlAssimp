@@ -5,9 +5,28 @@ Mesh::Mesh(const QVector<Vertex> &vertices, const QVector<GLuint> &indices, cons
     this->vertices = vertices;
     this->indices  = indices;
     this->textures = textures;
-    qDebug() << "Mesh init func:" <<  initializeOpenGLFunctions();
+
     setupMesh();
 }
+
+Mesh::Mesh(const Mesh &other)
+{
+    this->vertices = other.vertices;
+    this->indices  = other.indices;
+    this->textures = other.textures;
+
+    setupMesh();
+}
+
+Mesh &Mesh::operator=(const Mesh &other)
+{
+    this->vertices = other.vertices;
+    this->indices  = other.indices;
+    this->textures = other.textures;
+
+    setupMesh();
+}
+
 
 void Mesh::Draw(const QOpenGLShaderProgram &program)
 {
@@ -33,7 +52,7 @@ void Mesh::Draw(const QOpenGLShaderProgram &program)
 
 void Mesh::setupMesh()
 {
-
+    initializeOpenGLFunctions();
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
     glGenBuffers(1, &EBO);

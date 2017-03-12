@@ -3,21 +3,14 @@
 #include <QDebug>
 Render::Render(QObject *parent)
     : QObject(parent)
-    , m_model(0)
 {
     m_fps = 60;
 }
-Render::~Render()
-{
-    if (m_model) {
-        delete m_model;
-        m_model = nullptr;
-    }
-}
+
 void Render::Init(QSize size)
 {
     m_size = size;
-    qDebug() << "Render init func" << initializeOpenGLFunctions();
+    initializeOpenGLFunctions();
 #ifdef USE_GL_DEBUGGER
     logger.initialize();
     connect(&logger, &QOpenGLDebugLogger::messageLogged, [=](const QOpenGLDebugMessage &msg){
@@ -28,8 +21,7 @@ void Render::Init(QSize size)
 
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glEnable(GL_DEPTH_TEST);
-    m_model = new Model;
-    m_model->Init("model/nanosuit/nanosuit.obj");
+    m_model.Init("model/nanosuit/nanosuit.obj");
     initShader();
     initMatrixs();
     initVertices();
@@ -43,7 +35,7 @@ void Render::Paint()
     m_program.setUniformValue("view", mViewMatrix);
     m_program.setUniformValue("projection", mProjectionMatrix);
 
-    m_model->Draw(m_program);
+    m_model.Draw(m_program);
     calcFPS();
 }
 
@@ -54,11 +46,11 @@ qreal Render::GetFPS()
 
 void Render::initShader()
 {
-    if (!m_program.addShaderFromSourceFile(QOpenGLShader::Vertex, "qrc:/vertex.vsh")) {
+    if (!m_program.addShaderFromSourceFile(QOpenGLShader::Vertex, ":/vertex.vsh")) {
         qDebug() << " add vertex shader failed:" << m_program.log();
         return ;
     }
-    if (!m_program.addShaderFromSourceFile(QOpenGLShader::Fragment, "qrc:/fragment.fsh")) {
+    if (!m_program.addShaderFromSourceFile(QOpenGLShader::Fragment, ":/fragment.fsh")) {
         qDebug() << "add fragment shader failed:" << m_program.log();
     }
     m_program.link();

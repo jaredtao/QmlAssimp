@@ -4,7 +4,7 @@
 
 void Model::Init(QString path)
 {
-    qDebug() << "Model init func:" <<  initializeOpenGLFunctions();
+    initializeOpenGLFunctions();
     loadModel(path);
 }
 void Model::Draw(const QOpenGLShaderProgram & program)

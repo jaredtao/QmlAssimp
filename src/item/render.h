@@ -15,7 +15,6 @@ class Render : public QObject,  protected GLFUNC
     Q_OBJECT
 public:
     Render(QObject *parent = nullptr);
-    ~Render();
     void Init(QSize);
     void Paint();
     qreal GetFPS();
@@ -28,7 +27,7 @@ private:
     void updateFPS(qreal );
 private:
     QOpenGLShaderProgram m_program;
-    Model *m_model;
+    Model m_model;
     QMatrix4x4 mModelMatrix;
     QMatrix4x4 mViewMatrix;
     QMatrix4x4 mProjectionMatrix;

@@ -37,7 +37,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 
 #use QOpenGLDebuggerLogger to debug OpenGL
-DEFINES += USE_GL_DEBUGGER
+#DEFINES += USE_GL_DEBUGGER
 
 INCLUDEPATH += src
 SOURCES += src/main.cpp \
