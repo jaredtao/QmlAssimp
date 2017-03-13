@@ -118,7 +118,7 @@ QVector<Texture> Model::loadMaterialTexture(aiMaterial *mat,
 GLint Model::TextureFromFile(const char * path, QString directory)
 {
     QString name = path;
-    name +="/" + directory;
+    name =directory + "/" + name;
     GLuint textureID;
     glGenTextures(1, &textureID);
     QImage image(name);

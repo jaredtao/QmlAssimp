@@ -25,6 +25,7 @@ Mesh &Mesh::operator=(const Mesh &other)
     this->textures = other.textures;
 
     setupMesh();
+    return *this;
 }
 
 

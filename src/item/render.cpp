@@ -18,18 +18,20 @@ void Render::Init(QSize size)
     });
     logger.startLogging();
 #endif
-
+    glViewport(0, 0, size.width(), size.height());
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glEnable(GL_DEPTH_TEST);
-    m_model.Init("model/nanosuit/nanosuit.obj");
     initShader();
     initMatrixs();
     initVertices();
+
+    m_model.Init("nanosuit/nanosuit.obj");
 }
 
 void Render::Paint()
 {
-    glClearColor(0.0f, 0.1f, 0.0f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
     m_program.bind();
     m_program.setUniformValue("model", mModelMatrix);
     m_program.setUniformValue("view", mViewMatrix);
