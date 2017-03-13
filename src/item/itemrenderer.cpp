@@ -5,7 +5,6 @@ ItemRenderer::ItemRenderer()
 {
 }
 
-
 void ItemRenderer::render()
 {
     m_render.Paint();
@@ -22,7 +21,12 @@ QOpenGLFramebufferObject *ItemRenderer::createFramebufferObject(const QSize &siz
 
 void ItemRenderer::synchronize(QQuickFramebufferObject *fbo)
 {
+    //cast fbo to Item
     Item *item =qobject_cast<Item*>(fbo);
     //here can synchronize info between item and render.
     item->setFps(m_render.GetFPS());
+    if(!item->m_json.isEmpty()) {
+        m_render.SetParams(item->m_json);
+        item->m_json = QJsonObject();
+    }
 }

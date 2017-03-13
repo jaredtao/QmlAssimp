@@ -1,10 +1,14 @@
 #include "render.h"
 #include <QTime>
 #include <QDebug>
+#include <QJsonObject>
 Render::Render(QObject *parent)
     : QObject(parent)
 {
     m_fps = 60;
+    m_xRotate = 0;
+    m_yRotate = 0;
+    m_zRotate = 0;
 }
 
 void Render::Init(QSize size)
@@ -46,6 +50,21 @@ qreal Render::GetFPS()
     return m_fps;
 }
 
+void Render::SetParams(const QJsonObject & params)
+{
+    for (auto i : params.keys()) {
+        if (i == "xRotate") {
+            xRotate(params[i].toDouble());
+        } else if (i == "yRotate") {
+            yRotate(params[i].toDouble());
+        } else if (i == "zRotate") {
+            zRotate(params[i].toDouble());
+        } else {
+            qDebug() << "not support command:" << i;
+        }
+    }
+}
+
 void Render::initShader()
 {
     if (!m_program.addShaderFromSourceFile(QOpenGLShader::Vertex, ":/vertex.vsh")) {
@@ -69,13 +88,39 @@ void Render::initMatrixs()
     mProjectionMatrix.perspective(45, m_size.width() / (m_size.height() ? m_size.height() : 1), 0.1f , 100.0f);
 
     mViewMatrix.setToIdentity();
-//    mViewMatrix.lookAt(QVector3D(0.0, 0.0, 1.0), QVector3D(0.0, 0.0, 0.0), QVector3D(0.0, 1.0, 0.0));
-    mViewMatrix.lookAt(QVector3D(0.0f, 0.0f, 1.001f), QVector3D(0.0f, 0.0f, -5.0f), QVector3D(0.0f, 1.0f, 0.0f));
+    mViewMatrix.lookAt(QVector3D(0.0, 0.0, 1.0), QVector3D(0.0, 0.0, 0.0), QVector3D(0.0, 1.0, 0.0));
+    //    mViewMatrix.lookAt(QVector3D(0.0f, 0.0f, 1.001f), QVector3D(0.0f, 0.0f, -5.0f), QVector3D(0.0f, 1.0f, 0.0f));
 }
 
 void Render::initVertices()
 {
 
+}
+
+void Render::xRotate(qreal v)
+{
+    m_xRotate = v;
+    updateRotate();
+}
+
+void Render::yRotate(qreal v)
+{
+    m_yRotate = v;
+    updateRotate();
+}
+
+void Render::zRotate(qreal v)
+{
+    m_zRotate = v;
+    updateRotate();
+}
+
+void Render::updateRotate()
+{
+    mModelMatrix.setToIdentity();
+    mModelMatrix.rotate(QQuaternion(m_xRotate, QVector3D(1, 0, 0)));
+    mModelMatrix.rotate(QQuaternion(m_yRotate, QVector3D(0, 1, 0)));
+    mModelMatrix.rotate(QQuaternion(m_zRotate, QVector3D(0, 0, 1)));
 }
 void Render::calcFPS()
 {

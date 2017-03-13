@@ -13,6 +13,7 @@ protected:
     void render() override;
     QOpenGLFramebufferObject *createFramebufferObject(const QSize &size) override;
     void synchronize(QQuickFramebufferObject *) override;
+
     Render m_render;
 };
 
