@@ -60,4 +60,13 @@ RESOURCES += \
     img/img.qrc \
     glsl/glsl.qrc
 
+#自动拷贝 文件夹到运行目录
+CONFIG += autoDeploymentDir
+#这里写到最后一级文件夹
+deployDirs = $$PWD/model/nanosuit
 
+#自动拷贝 文件到运行目录
+#CONFIG += autoDeploymentFiles
+#deployFiles = $$PWD/model/nanosuit/nanosuit.obj
+
+include (deployment.pri)

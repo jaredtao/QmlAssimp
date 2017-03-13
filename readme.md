@@ -1,3 +1,4 @@
-#3D model show demo
+# 3D model show demo
 
+![Demo](/example.png)
 use Assimp and qml to show a 3D model
