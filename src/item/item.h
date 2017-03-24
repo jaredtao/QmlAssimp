@@ -30,7 +30,12 @@ public:
     explicit Item(QQuickItem *parent = 0);
     ~Item();
     void timerEvent(QTimerEvent *) override;
-
+    void keyPressEvent(QKeyEvent *event) override;
+    void keyReleaseEvent(QKeyEvent *event) override;
+    void mousePressEvent(QMouseEvent *event) override;
+    void mouseMoveEvent(QMouseEvent *event) override;
+    void wheelEvent(QWheelEvent *event) override;
+    void checkKey();
     // QQmlParserStatus interface
 public:
     void classBegin() override;

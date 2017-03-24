@@ -1,5 +1,8 @@
 #include "item.h"
 #include "itemrenderer.h"
+
+#define ARRAYLEN(arr) (sizeof(arr)/sizeof(arr[0]))
+
 class ItemPrivate{
 public:
     ItemPrivate() {
@@ -25,13 +28,6 @@ Item::~Item()
 {
     delete m_dptr;
 }
-
-void Item::timerEvent(QTimerEvent *)
-{
-    update();
-}
-
-
 void Item::classBegin()
 {
 }
@@ -39,6 +35,36 @@ void Item::classBegin()
 void Item::componentComplete()
 {
     startTimer(1);
+}
+
+void Item::timerEvent(QTimerEvent *)
+{
+    update();
+}
+
+void Item::keyPressEvent(QKeyEvent *event)
+{
+
+}
+
+void Item::keyReleaseEvent(QKeyEvent *event)
+{
+
+}
+
+void Item::mousePressEvent(QMouseEvent *event)
+{
+
+}
+
+void Item::mouseMoveEvent(QMouseEvent *event)
+{
+
+}
+
+void Item::wheelEvent(QWheelEvent *event)
+{
+
 }
 
 QQuickFramebufferObject::Renderer *Item::createRenderer() const

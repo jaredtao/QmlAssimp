@@ -6,7 +6,7 @@ CONFIG(autoDeploymentDir) {
             copyDirs.commands =$(COPY_DIR) $${dir} $${OUT_PWD}/$$basename(dir)
         } else {
             copyDirs.commands +=| $(COPY_DIR) $${dir} $${OUT_PWD}/$$basename(dir)
-        }DESTDIR
+        }
     }
     win32{
         copyDirs.commands ~= s,/,\\\\,g
@@ -23,7 +23,7 @@ CONFIG(autoDeploymentFiles) {
             copyFiles.commands =$(COPY) $${file} $${OUT_PWD}
         } else {
             copyFiles.commands +=| $(COPY) $${file} $${OUT_PWD}
-        }DESTDIR
+        }
     }
     win32{
         copyFiles.commands ~= s,/,\\\\,g
