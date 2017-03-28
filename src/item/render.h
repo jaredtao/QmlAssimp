@@ -10,11 +10,12 @@
 #include <QObject>
 
 #include "model/model.h"
-class Render : public QObject,  protected GLFUNC
+class Render :  protected GLFUNC
 {
-    Q_OBJECT
 public:
-    Render(QObject *parent = nullptr);
+    Render();
+    Render(const Render & other) = delete;
+    Render & operator=(const Render & other) = delete;
     void Init(QSize);
     void Paint();
     qreal GetFPS();

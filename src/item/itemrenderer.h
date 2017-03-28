@@ -7,14 +7,14 @@ class ItemRenderer : public QQuickFramebufferObject::Renderer
 {
 public:
     ItemRenderer();
-
+    ~ItemRenderer();
     // Renderer interface
 protected:
     void render() override;
     QOpenGLFramebufferObject *createFramebufferObject(const QSize &size) override;
     void synchronize(QQuickFramebufferObject *) override;
-
-    Render m_render;
+private:
+    Render *m_render;
 };
 
 #endif // RENDERER_H

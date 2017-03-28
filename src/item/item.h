@@ -26,6 +26,9 @@ public:
     void setXRotate(qreal);
     void setYRotate(qreal);
     void setZRotate(qreal);
+
+    const QJsonObject & GetParams();
+    void ClearParams();
 public:
     explicit Item(QQuickItem *parent = 0);
     ~Item();
@@ -54,10 +57,9 @@ public slots:
     void on_Item_xRotateChanged();
     void on_Item_yRotateChanged();
     void on_Item_zRotateChanged();
-public:
+private:
     //use json  as Command Queue.
     QJsonObject m_json;
-private:
     ItemPrivate *m_dptr;
 
 };

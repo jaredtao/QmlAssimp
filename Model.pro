@@ -45,7 +45,8 @@ SOURCES += src/main.cpp \
     src/item/render.cpp \
     src/item/itemrenderer.cpp \
     src/model/model.cpp \
-    src/model/mesh.cpp
+    src/model/mesh.cpp \
+    src/item/camera.cpp
 
 HEADERS += \
     src/glfunc.h \
@@ -53,7 +54,8 @@ HEADERS += \
     src/item/render.h \
     src/item/itemrenderer.h \
     src/model/model.h \
-    src/model/mesh.h
+    src/model/mesh.h \
+    src/item/camera.h
 
 RESOURCES += \
     qml/qml.qrc \
@@ -65,8 +67,7 @@ CONFIG += autoDeploymentDir
 #这里写到最后一级文件夹
 deployDirs = $$PWD/model/nanosuit
 
-#自动拷贝 文件到运行目录
-#CONFIG += autoDeploymentFiles
+#自动拷贝 文件到运行目�#CONFIG += autoDeploymentFiles
 #deployFiles = $$PWD/model/nanosuit/nanosuit.obj
 
 include (deployment.pri)

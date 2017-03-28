@@ -2,10 +2,13 @@ import QtQuick 2.0
 import QtQuick.Controls 2.0
 import QtQuick.Window 2.0
 import Item 1.0
-Item{
+Window{
     id:root
-    width: Screen.width
-    height: Screen.height
+    width:1024
+    height:768
+    x: (Screen.desktopAvailableWidth - width) / 2
+    y: (Screen.desktopAvailableHeight - height) / 2
+    visible: true
 
     Image {
         anchors.fill: parent
@@ -15,7 +18,6 @@ Item{
             width:512
             height:384
             anchors.centerIn: parent
-
             Text {
                 anchors {
                     left:parent.left

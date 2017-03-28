@@ -34,7 +34,7 @@ void Item::classBegin()
 
 void Item::componentComplete()
 {
-    startTimer(1);
+    startTimer(16);
 }
 
 void Item::timerEvent(QTimerEvent *)
@@ -121,6 +121,16 @@ void Item::setZRotate(qreal v)
         m_dptr->zRotate = v;
         emit zRotateChanged();
     }
+}
+
+const QJsonObject &Item::GetParams()
+{
+    return m_json;
+}
+
+void Item::ClearParams()
+{
+    m_json = QJsonObject();
 }
 void Item::on_Item_xRotateChanged()
 {

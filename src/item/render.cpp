@@ -2,9 +2,10 @@
 #include <QTime>
 #include <QDebug>
 #include <QJsonObject>
-Render::Render(QObject *parent)
-    : QObject(parent)
+#include <QThread>
+Render::Render()
 {
+    qDebug() << "Render construct" << this;
     m_fps = 60;
     m_xRotate = 0;
     m_yRotate = 0;
@@ -13,11 +14,14 @@ Render::Render(QObject *parent)
 
 void Render::Init(QSize size)
 {
+    QTime time;
+    time.start();
+    qDebug() << "time start" << QThread::currentThreadId() << this;
     m_size = size;
     initializeOpenGLFunctions();
 #ifdef USE_GL_DEBUGGER
     logger.initialize();
-    connect(&logger, &QOpenGLDebugLogger::messageLogged, [=](const QOpenGLDebugMessage &msg){
+    QObject::connect(&logger, &QOpenGLDebugLogger::messageLogged, [=](const QOpenGLDebugMessage &msg){
         qDebug() << msg;
     });
     logger.startLogging();
@@ -28,8 +32,11 @@ void Render::Init(QSize size)
     initShader();
     initMatrixs();
     initVertices();
-
+    auto cost1 = time.elapsed();
+    qDebug() << "init OpenGL datas cost time :" << cost1;
     m_model.Init("nanosuit/nanosuit.obj");
+    auto cost2 = time.elapsed() - cost1;
+    qDebug() << "init Model cost time:" << cost2;
 }
 
 void Render::Paint()
