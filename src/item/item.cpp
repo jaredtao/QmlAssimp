@@ -34,7 +34,7 @@ void Item::classBegin()
 
 void Item::componentComplete()
 {
-    startTimer(16);
+    startTimer(1);
 }
 
 void Item::timerEvent(QTimerEvent *)

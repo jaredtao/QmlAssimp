@@ -9,6 +9,6 @@ this is just a sample demo.
 
 3、 use QQuickItem/QQuickFramebufferObject + Qt OpenGL to render 3D molde
 
-(This Project will continue to update)
+**(This Project will continue to update)**
 ### Demo:
 ![Demo](/example.png)
