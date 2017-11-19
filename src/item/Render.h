@@ -8,7 +8,7 @@
 #include <QOpenGLDebugLogger>
 #include <QOpenGLDebugMessage>
 #include <QObject>
-
+#include <QTime>
 #include "model/model.h"
 class Render :  protected GLFUNC
 {
@@ -16,7 +16,7 @@ public:
     Render();
     Render(const Render & other) = delete;
     Render & operator=(const Render & other) = delete;
-    void Init(QSize);
+    void Init(const QSize &size);
     void Paint();
     qreal GetFPS();
     void SetParams(const QJsonObject &params );
@@ -38,7 +38,7 @@ private:
     QMatrix4x4 mModelMatrix;
     QMatrix4x4 mViewMatrix;
     QMatrix4x4 mProjectionMatrix;
-
+    QTime m_time;
     QSize m_size;
     qreal m_fps;
     qreal m_xRotate;

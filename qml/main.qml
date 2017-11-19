@@ -1,7 +1,7 @@
 import QtQuick 2.0
 import QtQuick.Controls 2.0
 import QtQuick.Window 2.0
-import Item 1.0
+import FBOItem 1.0
 Window{
     id:root
     width:1024
@@ -13,20 +13,9 @@ Window{
     Image {
         anchors.fill: parent
         source:"qrc:/bg.jpg"
-        Item{
-            id:item
-            width:512
-            height:384
-            anchors.centerIn: parent
-            Text {
-                anchors {
-                    left:parent.left
-                    top:parent.top
-                    margins: 5
-                }
-                text:"FPS: " + item.fps.toFixed(1)
-                color:"green"
-            }
+        FBOItem {
+            id: fboItem
+            anchors.fill: parent
         }
         Button {
             id:quitBtn
@@ -38,25 +27,27 @@ Window{
             text:"Quit"
             onClicked: Qt.quit()
         }
-        Column {
-            anchors {
-                left:parent.left
-                bottom:parent.bottom
-            }
-            Row{
-                Slider {id:xRotate; from:0; to:360;onValueChanged: item.xRotate = value.toFixed(0)}
-                Text{text:"X alias:" + xRotate.value.toFixed(0)}
-            }
-            Row{
-                Slider {id:yRotate; from:0; to:360;onValueChanged: item.yRotate = value.toFixed(0)}
-                Text{text:"Y alias:" + yRotate.value.toFixed(0)}
-            }
-            Row{
-                Slider {id:zRotate; from:0; to:360;onValueChanged: item.zRotate = value.toFixed(0)}
-                Text{text:"Z alias:" + zRotate.value.toFixed(0)}
-            }
+    }
+    Item {
+        property int fps: 0
+        property int frameCount: 0
 
+        NumberAnimation on rotation {
+            from: 0
+            to: 360
+            duration: 1000;
+            loops: Animation.Infinite
         }
-
+        onRotationChanged: ++frameCount
+        Timer {
+            interval: 1000
+            repeat: true
+            running: true
+            onTriggered: {
+                parent.fps = parent.frameCount
+                parent.frameCount = 0;
+                console.log("fps: ", parent.fps)
+            }
+        }
     }
 }

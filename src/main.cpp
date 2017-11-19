@@ -4,7 +4,7 @@
 #include <QQmlApplicationEngine>
 #include <QSplashScreen>
 #include <QScreen>
-#include "item/item.h"
+#include "item/FBOItem.h"
 int main(int argc, char *argv[])
 {
     qSetMessagePattern("log[%{file} %{function} %{line}] %{message}");
@@ -20,7 +20,7 @@ int main(int argc, char *argv[])
     QSurfaceFormat::setDefaultFormat(fmt);
     //![1]
 
-    qmlRegisterType<Item>("Item", 1, 0, "Item");
+    qmlRegisterType<FBOItem>("FBOItem", 1, 0, "FBOItem");
     QQmlApplicationEngine engine(QUrl(QLatin1Literal("qrc:/main.qml")));
 
     return a.exec();

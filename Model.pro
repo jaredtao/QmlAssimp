@@ -41,21 +41,19 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 INCLUDEPATH += src
 SOURCES += src/main.cpp \
-    src/item/item.cpp \
-    src/item/render.cpp \
-    src/item/itemrenderer.cpp \
     src/model/model.cpp \
     src/model/mesh.cpp \
-    src/item/camera.cpp
+    src/item/FBOItem.cpp \
+    src/item/Render.cpp \
+    src/item/Camera.cpp
 
 HEADERS += \
     src/glfunc.h \
-    src/item/item.h \
-    src/item/render.h \
-    src/item/itemrenderer.h \
     src/model/model.h \
     src/model/mesh.h \
-    src/item/camera.h
+    src/item/FBOItem.h \
+    src/item/Render.h \
+    src/item/Camera.h
 
 RESOURCES += \
     qml/qml.qrc \
@@ -67,7 +65,7 @@ CONFIG += autoDeploymentDir
 #这里写到最后一级文件夹
 deployDirs = $$PWD/model/nanosuit
 
-#自动拷贝 文件到运行目�#CONFIG += autoDeploymentFiles
+#自动拷贝 文件到运行目��#CONFIG += autoDeploymentFiles
 #deployFiles = $$PWD/model/nanosuit/nanosuit.obj
 
 include (deployment.pri)

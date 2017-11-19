@@ -1,5 +1,5 @@
-#include "render.h"
-#include <QTime>
+#include "Render.h"
+
 #include <QDebug>
 #include <QJsonObject>
 #include <QThread>
@@ -12,7 +12,7 @@ Render::Render()
     m_zRotate = 0;
 }
 
-void Render::Init(QSize size)
+void Render::Init(const QSize &size)
 {
     QTime time;
     time.start();
@@ -37,6 +37,7 @@ void Render::Init(QSize size)
     m_model.Init("nanosuit/nanosuit.obj");
     auto cost2 = time.elapsed() - cost1;
     qDebug() << "init Model cost time:" << cost2;
+    m_time.start();
 }
 
 void Render::Paint()
@@ -131,15 +132,12 @@ void Render::updateRotate()
 }
 void Render::calcFPS()
 {
-    static QTime time;
-    static int once = [=](){time.start(); return 0;}();
-    Q_UNUSED(once)
     static int frame = 0;
     frame++;
     if (frame > 10) {
-        qreal elasped = time.elapsed();
+        qreal elasped = m_time.elapsed();
         updateFPS(frame * 1000.0/ elasped );
-        time.restart();
+        m_time.restart();
         frame = 0;
     }
 }
