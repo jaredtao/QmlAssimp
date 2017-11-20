@@ -7,9 +7,6 @@ Render::Render()
 {
     qDebug() << "Render construct" << this;
     m_fps = 60;
-    m_xRotate = 0;
-    m_yRotate = 0;
-    m_zRotate = 0;
 }
 
 void Render::Init(const QSize &size)
@@ -26,6 +23,7 @@ void Render::Init(const QSize &size)
     });
     logger.startLogging();
 #endif
+
     glViewport(0, 0, size.width(), size.height());
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glEnable(GL_DEPTH_TEST);
@@ -45,10 +43,8 @@ void Render::Paint()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
     m_program.bind();
-    m_program.setUniformValue("model", mModelMatrix);
-    m_program.setUniformValue("view", mViewMatrix);
-    m_program.setUniformValue("projection", mProjectionMatrix);
-
+    m_mvpMatrix = m_camera.projectMatrix() * m_camera.viewMatrix() * m_ModelMatrix;
+    m_program.setUniformValue("mvpMat", m_mvpMatrix);
     m_model.Draw(m_program);
     calcFPS();
 }
@@ -56,21 +52,6 @@ void Render::Paint()
 qreal Render::GetFPS()
 {
     return m_fps;
-}
-
-void Render::SetParams(const QJsonObject & params)
-{
-    for (auto i : params.keys()) {
-        if (i == "xRotate") {
-            xRotate(params[i].toDouble());
-        } else if (i == "yRotate") {
-            yRotate(params[i].toDouble());
-        } else if (i == "zRotate") {
-            zRotate(params[i].toDouble());
-        } else {
-            qDebug() << "not support command:" << i;
-        }
-    }
 }
 
 void Render::initShader()
@@ -88,16 +69,12 @@ void Render::initShader()
 
 void Render::initMatrixs()
 {
-    mModelMatrix.setToIdentity();
-    mModelMatrix.translate(0.0f, -1.75f, 0.0f);
-    mModelMatrix.scale(0.2f, 0.2f, 0.2f);
+    m_ModelMatrix.setToIdentity();
+//    m_ModelMatrix.translate(0.0f, 1.0f, 0.0f);
+    m_ModelMatrix.scale(0.4f, 0.4f, 0.4f);
 
-    mProjectionMatrix.setToIdentity();
-    mProjectionMatrix.perspective(45, m_size.width() / (m_size.height() ? m_size.height() : 1), 0.1f , 100.0f);
-
-    mViewMatrix.setToIdentity();
-    mViewMatrix.lookAt(QVector3D(0.0, 0.0, 1.0), QVector3D(0.0, 0.0, 0.0), QVector3D(0.0, 1.0, 0.0));
-    //    mViewMatrix.lookAt(QVector3D(0.0f, 0.0f, 1.001f), QVector3D(0.0f, 0.0f, -5.0f), QVector3D(0.0f, 1.0f, 0.0f));
+    m_camera.setFarPlane(100);
+    m_camera.sync();
 }
 
 void Render::initVertices()
@@ -105,31 +82,6 @@ void Render::initVertices()
 
 }
 
-void Render::xRotate(qreal v)
-{
-    m_xRotate = v;
-    updateRotate();
-}
-
-void Render::yRotate(qreal v)
-{
-    m_yRotate = v;
-    updateRotate();
-}
-
-void Render::zRotate(qreal v)
-{
-    m_zRotate = v;
-    updateRotate();
-}
-
-void Render::updateRotate()
-{
-    mModelMatrix.setToIdentity();
-    mModelMatrix.rotate(QQuaternion(m_xRotate, QVector3D(1, 0, 0)));
-    mModelMatrix.rotate(QQuaternion(m_yRotate, QVector3D(0, 1, 0)));
-    mModelMatrix.rotate(QQuaternion(m_zRotate, QVector3D(0, 0, 1)));
-}
 void Render::calcFPS()
 {
     static int frame = 0;
@@ -144,4 +96,5 @@ void Render::calcFPS()
 void Render::updateFPS(qreal v)
 {
     m_fps = v;
+    qWarning() << "FPS: " << m_fps;
 }

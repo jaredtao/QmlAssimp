@@ -50,7 +50,7 @@ void FBOItem::classBegin()
 
 void FBOItem::componentComplete()
 {
-    startTimer(1);
+    startTimer(16);
 }
 
 void FBOItem::timerEvent(QTimerEvent *)

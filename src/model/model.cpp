@@ -1,7 +1,7 @@
 #include "model.h"
 #include <QImage>
 #include <QDebug>
-
+#include "ailoaderiosystem.h"
 void Model::Init(QString path)
 {
     initializeOpenGLFunctions();
@@ -16,9 +16,9 @@ void Model::Draw(const QOpenGLShaderProgram & program)
 void Model::loadModel(QString path)
 {
     Assimp::Importer importer;
+//    importer.SetIOHandler(new AiLoaderIOSystem);
     const aiScene *scene = importer.ReadFile(path.toStdString(),
-                                             aiProcess_Triangulate |
-                                             aiProcess_FlipUVs);
+                                             aiProcess_Triangulate);
     if (!scene || scene->mFlags == AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
         qDebug() << "ERROR::ASSIMP " << importer.GetErrorString();
         return ;
