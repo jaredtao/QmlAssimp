@@ -1,32 +1,35 @@
 import QtQuick 2.0
 import QtQuick.Controls 2.0
 import QtQuick.Window 2.0
-import FBOItem 1.0
-Window{
+import J3D 1.0
+Item {
     id:root
     width:1024
     height:768
-    x: (Screen.desktopAvailableWidth - width) / 2
-    y: (Screen.desktopAvailableHeight - height) / 2
-    visible: true
-
     Image {
         anchors.fill: parent
         source:"qrc:/bg.jpg"
-        FBOItem {
-            id: fboItem
-            anchors.fill: parent
+    }
+    FBOItem {
+        id: fboItem
+        width: 800
+        height: 600
+        anchors.centerIn: parent
+        JCamera {
         }
-        Button {
-            id:quitBtn
-            anchors{
-                bottom:parent.bottom
-                right:parent.right
-                margins: 5
-            }
-            text:"Quit"
-            onClicked: Qt.quit()
+        Model {
+            source: "nanosuit/nanosuit.obj"
         }
+    }
+    Button {
+        id:quitBtn
+        anchors{
+            bottom:parent.bottom
+            right:parent.right
+            margins: 5
+        }
+        text:"Quit"
+        onClicked: Qt.quit()
     }
     Item {
         property int fps: 0

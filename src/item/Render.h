@@ -14,7 +14,7 @@
 class Render :  protected GLFUNC
 {
 public:
-    Render();
+    Render(JCamera *camera, Model *model);
     Render(const Render & other) = delete;
     Render & operator=(const Render & other) = delete;
     void Init(const QSize &size);
@@ -28,9 +28,10 @@ private:
     void calcFPS();
     void updateFPS(qreal );
 private:
+    Model *m_model = nullptr;
+    JCamera *m_camera = nullptr;
+
     QOpenGLShaderProgram m_program;
-    Model m_model;
-    JCamera m_camera;
     QMatrix4x4 m_ModelMatrix, m_mvpMatrix;
     QTime m_time;
     QSize m_size;

@@ -2,21 +2,46 @@
 #include <QImage>
 #include <QDebug>
 #include "ailoaderiosystem.h"
-void Model::Init(QString path)
+#include <QQmlFile>
+#include <QElapsedTimer>
+void Model::Init()
 {
+    QElapsedTimer time;
+    time.start();
     initializeOpenGLFunctions();
-    loadModel(path);
+    auto str = m_source.toString();
+    if (str.startsWith("qrc:/")) {
+        str.remove("qrc:/");
+    }
+    loadModel(str);
+    auto cost = time.elapsed();
+    qWarning() << "model load cost" << cost;
 }
 void Model::Draw(const QOpenGLShaderProgram & program)
 {
-    for (auto & i : meshes) {
-        i.Draw(program);
+    int count = meshes.size();
+    for (int i = 0; i < count; ++i) {
+        meshes[i].Draw(program);
     }
 }
-void Model::loadModel(QString path)
+
+void Model::setSource(const QUrl &source)
+{
+    if (m_source == source)
+        return;
+
+    m_source = source;
+    emit sourceChanged(m_source);
+}
+
+const QUrl &Model::source() const
+{
+    return m_source;
+}
+void Model::loadModel(const QString & path)
 {
     Assimp::Importer importer;
-//    importer.SetIOHandler(new AiLoaderIOSystem);
+    //    importer.SetIOHandler(new AiLoaderIOSystem);
     const aiScene *scene = importer.ReadFile(path.toStdString(),
                                              aiProcess_Triangulate);
     if (!scene || scene->mFlags == AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {

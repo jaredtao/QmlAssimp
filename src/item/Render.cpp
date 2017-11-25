@@ -3,12 +3,11 @@
 #include <QDebug>
 #include <QJsonObject>
 #include <QThread>
-Render::Render()
+Render::Render(JCamera *camera, Model *model) : m_camera(camera), m_model(model)
 {
     qDebug() << "Render construct" << this;
     m_fps = 60;
 }
-
 void Render::Init(const QSize &size)
 {
     QTime time;
@@ -30,11 +29,9 @@ void Render::Init(const QSize &size)
     initShader();
     initMatrixs();
     initVertices();
-    auto cost1 = time.elapsed();
-    qDebug() << "init OpenGL datas cost time :" << cost1;
-    m_model.Init("nanosuit/nanosuit.obj");
-    auto cost2 = time.elapsed() - cost1;
-    qDebug() << "init Model cost time:" << cost2;
+    if (m_model) {
+        m_model->Init();
+    }
     m_time.start();
 }
 
@@ -43,10 +40,14 @@ void Render::Paint()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
     m_program.bind();
-    m_mvpMatrix = m_camera.projectMatrix() * m_camera.viewMatrix() * m_ModelMatrix;
-    m_program.setUniformValue("mvpMat", m_mvpMatrix);
-    m_model.Draw(m_program);
-    calcFPS();
+    if (m_camera) {
+        m_mvpMatrix = m_camera->projectMatrix() * m_camera->viewMatrix() * m_ModelMatrix;
+        m_program.setUniformValue("mvpMat", m_mvpMatrix);
+    }
+    if (m_model) {
+        m_model->Draw(m_program);
+    }
+//    calcFPS();
 }
 
 qreal Render::GetFPS()
@@ -70,11 +71,12 @@ void Render::initShader()
 void Render::initMatrixs()
 {
     m_ModelMatrix.setToIdentity();
-//    m_ModelMatrix.translate(0.0f, 1.0f, 0.0f);
+    //    m_ModelMatrix.translate(0.0f, 1.0f, 0.0f);
     m_ModelMatrix.scale(0.4f, 0.4f, 0.4f);
-
-    m_camera.setFarPlane(100);
-    m_camera.sync();
+    if (m_camera) {
+        m_camera->setFarPlane(100);
+        m_camera->sync();
+    }
 }
 
 void Render::initVertices()
@@ -96,5 +98,5 @@ void Render::calcFPS()
 void Render::updateFPS(qreal v)
 {
     m_fps = v;
-    qWarning() << "FPS: " << m_fps;
+    //    qWarning() << "FPS: " << m_fps;
 }

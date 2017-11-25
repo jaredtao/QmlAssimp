@@ -5,6 +5,8 @@
 #include <QSplashScreen>
 #include <QScreen>
 #include "item/FBOItem.h"
+#include "model/model.h"
+#include "src/item/Camera.h"
 int main(int argc, char *argv[])
 {
     qSetMessagePattern("log[%{file} %{function} %{line}] %{message}");
@@ -20,8 +22,14 @@ int main(int argc, char *argv[])
     QSurfaceFormat::setDefaultFormat(fmt);
     //![1]
 
-    qmlRegisterType<FBOItem>("FBOItem", 1, 0, "FBOItem");
-    QQmlApplicationEngine engine(QUrl(QLatin1Literal("qrc:/main.qml")));
-
+    qmlRegisterType<FBOItem>("J3D", 1, 0, "FBOItem");
+    qmlRegisterType<JCamera>("J3D", 1, 0, "JCamera");
+    qmlRegisterType<Model>("J3D", 1, 0, "Model");
+    qmlRegisterType<JMouseCamera>("J3D", 1, 0, "JMouseCamera");
+    QQuickView view;
+    view.setSource(QUrl(QLatin1Literal("qrc:/main.qml")));
+    view.setResizeMode(QQuickView::SizeViewToRootObject);
+    QObject::connect(view.engine(), &QQmlEngine::quit, &a, &QApplication::quit);
+    view.show();
     return a.exec();
 }
