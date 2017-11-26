@@ -9,29 +9,55 @@ Item {
     Image {
         anchors.fill: parent
         source:"qrc:/bg.jpg"
+
     }
+
+
     FBOItem {
         id: fboItem
         width: 800
         height: 600
         anchors.centerIn: parent
-        JCamera {
+        focus: true
+        Keys.enabled: true
+        Keys.onPressed: {
+            console.log("before position", camera.position)
+            camera.move(event.key)
+            console.log("after position", camera.position)
+        }
+        JKeyCamera {
+            id: camera
+            position: Qt.vector3d(0, 8, 22)
+            lookAt: Qt.vector3d(0, 8, 0)
+            up: Qt.vector3d(0, -1, 0)
+            aspectRatio: width / height
+            nearPlane: 1
+            farPlane: 1000
+            fieldOfView: 45
+            speed: 0.01
         }
         Model {
             source: "nanosuit/nanosuit.obj"
         }
     }
-    Button {
-        id:quitBtn
+
+    Row {
         anchors{
             bottom:parent.bottom
             right:parent.right
             margins: 5
         }
-        text:"Quit"
-        onClicked: Qt.quit()
+        spacing: 4
+        Button {
+            id:quitBtn
+
+            text:"Quit"
+            onClicked: Qt.quit()
+        }
     }
+
     Item {
+        id: fpsItem
         property int fps: 0
         property int frameCount: 0
 
@@ -49,8 +75,14 @@ Item {
             onTriggered: {
                 parent.fps = parent.frameCount
                 parent.frameCount = 0;
-                console.log("fps: ", parent.fps)
             }
         }
+
+    }
+    Text {
+        text: "FPS:" + fpsItem.fps
+        color: "red"
+        font.pixelSize: 20
+        font.bold: true
     }
 }

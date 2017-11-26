@@ -92,20 +92,17 @@ protected:
     bool m_viewMatrixIsDirty = false;
     bool m_projectMatrixIsDirty = false;
 };
-class JMouseCamera : public JCamera
-{
+class JKeyCamera : public JCamera {
     Q_OBJECT
+    Q_PROPERTY(qreal speed READ speed WRITE setSpeed NOTIFY speedChanged)
 public:
-    JMouseCamera(QObject *parent = nullptr);
-    Q_INVOKABLE void startRotate();
-    Q_INVOKABLE void rotate(qreal x, qreal y);
-    Q_INVOKABLE void moveForward(qreal step);
-    Q_INVOKABLE void startMove();
-    Q_INVOKABLE void move(qreal x, qreal y);
-protected:
-    QVector3D m_prevPosition;
-    QVector3D m_prevLookAt;
-    QVector3D m_prevUp;
-    QVector3D m_hNormal;
-    QVector3D m_vNormal;
+    Q_INVOKABLE void move(Qt::Key key);
+
+    qreal speed() const;
+public slots:
+    void setSpeed(qreal speed);
+signals:
+    void speedChanged(qreal speed);
+private:
+    qreal m_speed = 0.0f;
 };
