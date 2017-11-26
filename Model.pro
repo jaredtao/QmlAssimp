@@ -45,9 +45,7 @@ SOURCES += src/main.cpp \
     src/model/mesh.cpp \
     src/item/FBOItem.cpp \
     src/item/Render.cpp \
-    src/item/Camera.cpp \
-    src/model/ailoaderiostream.cpp \
-    src/model/ailoaderiosystem.cpp
+    src/item/Camera.cpp
 
 HEADERS += \
     src/glfunc.h \
@@ -55,9 +53,7 @@ HEADERS += \
     src/model/mesh.h \
     src/item/FBOItem.h \
     src/item/Render.h \
-    src/item/Camera.h \
-    src/model/ailoaderiostream.h \
-    src/model/ailoaderiosystem.h
+    src/item/Camera.h
 
 RESOURCES += \
     qml/qml.qrc \

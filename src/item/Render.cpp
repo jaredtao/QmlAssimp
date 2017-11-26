@@ -10,9 +10,6 @@ Render::Render(JCamera *camera, Model *model) : m_camera(camera), m_model(model)
 }
 void Render::Init(const QSize &size)
 {
-    QTime time;
-    time.start();
-    qDebug() << "time start" << QThread::currentThreadId() << this;
     m_size = size;
     initializeOpenGLFunctions();
 #ifdef USE_GL_DEBUGGER
@@ -41,6 +38,7 @@ void Render::Paint()
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
     m_program.bind();
     if (m_camera) {
+        m_camera->sync();
         m_mvpMatrix = m_camera->projectMatrix() * m_camera->viewMatrix() * m_ModelMatrix;
         m_program.setUniformValue("mvpMat", m_mvpMatrix);
     }
@@ -71,10 +69,7 @@ void Render::initShader()
 void Render::initMatrixs()
 {
     m_ModelMatrix.setToIdentity();
-    //    m_ModelMatrix.translate(0.0f, 1.0f, 0.0f);
-    m_ModelMatrix.scale(0.4f, 0.4f, 0.4f);
     if (m_camera) {
-        m_camera->setFarPlane(100);
         m_camera->sync();
     }
 }

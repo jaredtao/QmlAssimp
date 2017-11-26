@@ -1,5 +1,6 @@
 #include "Camera.h"
-
+#include <QKeyEvent>
+#include <QDebug>
 JCamera::JCamera(QObject *parent)
     : QObject( parent),
       m_position(0, 0, 10),
@@ -142,7 +143,7 @@ void JCamera::setViewRect(const QRectF &viewRect)
 
 void JCamera::setAspectRatio(float aspectRatio)
 {
-//    qWarning("Floating point comparison needs context sanity check");
+    //    qWarning("Floating point comparison needs context sanity check");
     if (qFuzzyCompare(m_aspectRatio, aspectRatio))
         return;
 
@@ -154,7 +155,7 @@ void JCamera::setAspectRatio(float aspectRatio)
 
 void JCamera::setFarPlane(float farPlane)
 {
-//    qWarning("Floating point comparison needs context sanity check");
+    //    qWarning("Floating point comparison needs context sanity check");
     if (qFuzzyCompare(m_farPlane, farPlane))
         return;
 
@@ -166,7 +167,7 @@ void JCamera::setFarPlane(float farPlane)
 
 void JCamera::setNearPlane(float nearPlane)
 {
-//    qWarning("Floating point comparison needs context sanity check");
+    //    qWarning("Floating point comparison needs context sanity check");
     if (qFuzzyCompare(m_nearPlane, nearPlane))
         return;
 
@@ -178,7 +179,7 @@ void JCamera::setNearPlane(float nearPlane)
 
 void JCamera::setFieldOfView(float fieldOfView)
 {
-//    qWarning("Floating point comparison needs context sanity check");
+    //    qWarning("Floating point comparison needs context sanity check");
     if (qFuzzyCompare(m_fieldOfView, fieldOfView))
         return;
 
@@ -188,53 +189,43 @@ void JCamera::setFieldOfView(float fieldOfView)
     emit requestWindowUpdate();
 }
 
-
-JMouseCamera::JMouseCamera(QObject *parent) : JCamera(parent)
+void JKeyCamera::move(Qt::Key key)
 {
-
+    auto front = lookAt() - position();
+    switch(key) {
+    case Qt::Key_W: {
+        setPosition(position() + (front * speed()));
+        break;
+    }
+    case Qt::Key_S: {
+        setPosition(position() - (front * speed()));
+        break;
+    }
+        //Note: 不好用，有问题
+    case Qt::Key_A: {
+        auto direct = QVector3D::crossProduct(front, up()).normalized() * speed();
+        setPosition(position() - direct);
+        break;
+    }
+    case Qt::Key_D: {
+        auto direct = QVector3D::crossProduct(front, up()).normalized() * speed();
+        setPosition(position() + direct);
+        break;
+    }
+    default: break;
+    }
 }
 
-void JMouseCamera::startRotate()
+qreal JKeyCamera::speed() const
 {
-    m_prevPosition = m_position;
-    m_prevUp = m_up;
+    return m_speed;
 }
 
-void JMouseCamera::rotate(qreal x, qreal y)
+void JKeyCamera::setSpeed(qreal speed)
 {
-    QMatrix4x4 transformMatrix, rotateMatrix;
-    const auto yUp = QVector3D(0.0f, 1.0f, 0.0f);
-    auto side = QVector3D::crossProduct(m_lookAt - m_prevPosition, yUp).normalized();
-    rotateMatrix.rotate(-x, yUp);
-    rotateMatrix.rotate(-y * m_prevUp.y() / qAbs(m_prevUp.y()), side);
+    if (qFuzzyCompare(m_speed, speed))
+        return;
 
-    transformMatrix.translate(m_lookAt);
-    transformMatrix *= rotateMatrix;
-    transformMatrix.translate(-m_lookAt);
-
-    setPosition(transformMatrix * m_prevPosition);
-    setUp(rotateMatrix * m_up);
-}
-
-void JMouseCamera::moveForward(qreal step)
-{
-    QVector3D forward = m_lookAt - m_position;
-    qreal forwardLength = forward.length();
-    if (forwardLength < step) return ;
-    setPosition(m_position + forward.normalized() * step);
-}
-
-void JMouseCamera::startMove()
-{
-    m_vNormal = m_up.normalized();
-    m_hNormal = QVector3D::crossProduct( m_up, m_lookAt - m_position);
-    m_prevPosition = m_position;
-    m_prevLookAt = m_lookAt;
-}
-
-void JMouseCamera::move(qreal x, qreal y)
-{
-    QVector3D delta = m_hNormal * x + m_vNormal * y * (m_lookAt - m_position).length();
-    setPosition(m_prevPosition + delta);
-    setLookAt(m_prevLookAt + delta);
+    m_speed = speed;
+    emit speedChanged(m_speed);
 }

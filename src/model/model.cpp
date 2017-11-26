@@ -1,7 +1,6 @@
 #include "model.h"
 #include <QImage>
 #include <QDebug>
-#include "ailoaderiosystem.h"
 #include <QQmlFile>
 #include <QElapsedTimer>
 void Model::Init()
@@ -41,7 +40,6 @@ const QUrl &Model::source() const
 void Model::loadModel(const QString & path)
 {
     Assimp::Importer importer;
-    //    importer.SetIOHandler(new AiLoaderIOSystem);
     const aiScene *scene = importer.ReadFile(path.toStdString(),
                                              aiProcess_Triangulate);
     if (!scene || scene->mFlags == AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {

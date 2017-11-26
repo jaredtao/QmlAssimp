@@ -24,8 +24,8 @@ int main(int argc, char *argv[])
 
     qmlRegisterType<FBOItem>("J3D", 1, 0, "FBOItem");
     qmlRegisterType<JCamera>("J3D", 1, 0, "JCamera");
+    qmlRegisterType<JKeyCamera>("J3D", 1, 0, "JKeyCamera");
     qmlRegisterType<Model>("J3D", 1, 0, "Model");
-    qmlRegisterType<JMouseCamera>("J3D", 1, 0, "JMouseCamera");
     QQuickView view;
     view.setSource(QUrl(QLatin1Literal("qrc:/main.qml")));
     view.setResizeMode(QQuickView::SizeViewToRootObject);
