@@ -21,11 +21,7 @@ struct Texture{
 class Mesh : public GLFUNC
 {
 public:
-    QVector<Vertex> vertices;
-    QVector<GLuint> indices;
-    QVector<Texture> textures;
-public:
-    Mesh( const   QVector<Vertex> & vertices,
+    Mesh( const QVector<Vertex> & vertices,
           const QVector<GLuint> & indices,
           const QVector<Texture> & textures);
     Mesh(const Mesh & other);
@@ -33,8 +29,12 @@ public:
 
     void Draw(const QOpenGLShaderProgram & program);
 private:
-    GLuint VAO, VBO, EBO;
     void setupMesh();
+
+    GLuint m_VAO, m_VBO, m_EBO;
+    QVector<Vertex> m_vertices;
+    QVector<GLuint> m_indices;
+    QVector<Texture> m_textures;
 };
 
 #endif // MESH_H

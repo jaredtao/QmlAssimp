@@ -2,6 +2,7 @@
 #include <QImage>
 #include <QDebug>
 #include <QQmlFile>
+#include <QFileInfo>
 #include <QElapsedTimer>
 void Model::Init()
 {
@@ -18,9 +19,9 @@ void Model::Init()
 }
 void Model::Draw(const QOpenGLShaderProgram & program)
 {
-    int count = meshes.size();
+    int count = m_meshes.size();
     for (int i = 0; i < count; ++i) {
-        meshes[i].Draw(program);
+        m_meshes[i].Draw(program);
     }
 }
 
@@ -40,26 +41,36 @@ const QUrl &Model::source() const
 void Model::loadModel(const QString & path)
 {
     Assimp::Importer importer;
+     // SET THIS TO REMOVE POINTS AND LINES -> HAVE ONLY TRIANGLES
+    importer.SetPropertyInteger(AI_CONFIG_PP_SBP_REMOVE, aiPrimitiveType_LINE|aiPrimitiveType_POINT);
+    // type and aiProcess_Triangulate discompose polygons with more than 3 points in triangles
+    // aiProcess_SortByPType makes sure that meshes data are triangles
     const aiScene *scene = importer.ReadFile(path.toStdString(),
-                                             aiProcess_Triangulate);
+                                             aiProcess_CalcTangentSpace       |
+                                             aiProcess_Triangulate            |
+                                             aiProcess_JoinIdenticalVertices  |
+                                             aiProcess_SortByPType);
     if (!scene || scene->mFlags == AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
         qDebug() << "ERROR::ASSIMP " << importer.GetErrorString();
         return ;
     }
-    this->directory = path.left(path.lastIndexOf('/'));
-    this->processNode(scene->mRootNode, scene);
+    m_scenePath = QFileInfo(path).absolutePath();
+
+    loadNode(scene->mRootNode, scene);
 }
-void Model::processNode(aiNode *node, const aiScene *scene)
+void Model::loadNode(aiNode *node, const aiScene *scene)
 {
+    //add Meshes to node
     for (GLuint i = 0; i < node->mNumMeshes; i++) {
         aiMesh *mesh = scene->mMeshes[node->mMeshes[i]];
-        this->meshes.push_back(this->processMesh(mesh, scene));
+        m_meshes.push_back(loadMesh(mesh, scene));
     }
+    //add child Meshes to node
     for (GLuint i = 0; i < node->mNumChildren; i++) {
-        this->processNode(node->mChildren[i], scene);
+        loadNode(node->mChildren[i], scene);
     }
 }
-Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene)
+Mesh Model::loadMesh(aiMesh *mesh, const aiScene *scene)
 {
     QVector<Vertex>		vertices;
     QVector<GLuint>		indices;
@@ -111,7 +122,7 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene)
         }
         //		textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
     }
-    return Mesh(vertices, indices, textures);
+     return Mesh(vertices, indices, textures);
 }
 QVector<Texture> Model::loadMaterialTexture(aiMaterial *mat,
                                      aiTextureType type,
@@ -122,7 +133,7 @@ QVector<Texture> Model::loadMaterialTexture(aiMaterial *mat,
     for (GLuint i = 0; i < mat->GetTextureCount(type); i++) {
         mat->GetTexture(type, i, &str);
         GLboolean skip = false;
-        for (const auto & j :textures_loaded) {
+        for (const auto & j :m_texturesLoaded) {
             if(j.path == str) {
                 textures.push_back(j);
                 skip = true;
@@ -131,7 +142,7 @@ QVector<Texture> Model::loadMaterialTexture(aiMaterial *mat,
         }
         if(!skip) {
             Texture texture;
-            texture.id = TextureFromFile(str.C_Str(), this->directory);
+            texture.id = TextureFromFile(str.C_Str(), this->m_scenePath);
             texture.type = typeName;
             textures.push_back(texture);
         }

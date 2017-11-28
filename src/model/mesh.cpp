@@ -1,70 +1,66 @@
 #include "mesh.h"
 
 Mesh::Mesh(const QVector<Vertex> &vertices, const QVector<GLuint> &indices, const QVector<Texture> &textures)
+    : m_vertices(vertices), m_indices(indices), m_textures(textures)
 {
-    this->vertices = vertices;
-    this->indices  = indices;
-    this->textures = textures;
-
     setupMesh();
 }
 
 Mesh::Mesh(const Mesh &other)
 {
-    this->vertices = other.vertices;
-    this->indices  = other.indices;
-    this->textures = other.textures;
+    m_vertices = other.m_vertices;
+    m_indices  = other.m_indices;
+    m_textures = other.m_textures;
 
     setupMesh();
 }
 
 Mesh &Mesh::operator=(const Mesh &other)
 {
-    this->vertices = other.vertices;
-    this->indices  = other.indices;
-    this->textures = other.textures;
+    m_vertices = other.m_vertices;
+    m_indices  = other.m_indices;
+    m_textures = other.m_textures;
 
     setupMesh();
     return *this;
 }
-
 
 void Mesh::Draw(const QOpenGLShaderProgram &program)
 {
     GLuint diffuseNr	= 1;
     GLuint specularNr	= 1;
     QString name;
-    for (GLuint i = 0; i < this->textures.size(); i++) {
+    for (int i = 0; i < m_textures.size(); ++i) {
         glActiveTexture(GL_TEXTURE0 + i);
-        if (this->textures[i].type == "texture_diffuse") {
+        if (m_textures[i].type == "texture_diffuse") {
             name = QString("material.texture_diffuse%1").arg(diffuseNr++);
-        } else if (this->textures[i].type == "texture_specular") {
+        } else if (m_textures[i].type == "texture_specular") {
             name = QString("material.texture_specular%1").arg(specularNr++);
         }
 
         glUniform1f(glGetUniformLocation(program.programId(), name.toStdString().c_str()), i);
-        glBindTexture(GL_TEXTURE_2D, this->textures[i].id);
+        glBindTexture(GL_TEXTURE_2D, m_textures[i].id);
     }
     glActiveTexture(GL_TEXTURE0);
-    glBindVertexArray(this->VAO);
-    glDrawElements(GL_TRIANGLES, this->indices.size(), GL_UNSIGNED_INT, 0);
+    glBindVertexArray(m_VAO);
+    glDrawElements(GL_TRIANGLES, m_indices.size(), GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);
 }
 
 void Mesh::setupMesh()
 {
     initializeOpenGLFunctions();
-    glGenVertexArrays(1, &VAO);
-    glGenBuffers(1, &VBO);
-    glGenBuffers(1, &EBO);
+    glGenVertexArrays(1, &m_VAO);
+    glGenBuffers(1, &m_VBO);
+    glGenBuffers(1, &m_EBO);
 
-    glBindVertexArray(VAO);
+    glBindVertexArray(m_VAO);
 
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), &vertices[0], GL_STATIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
+    glBufferData(GL_ARRAY_BUFFER, m_vertices.size() * sizeof(Vertex), &m_vertices[0], GL_STATIC_DRAW);
 
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(GLuint), &indices[0], GL_STATIC_DRAW);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_EBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_indices.size() * sizeof(GLuint), &m_indices[0], GL_STATIC_DRAW);
 
     //position
     glEnableVertexAttribArray(0);

@@ -28,16 +28,16 @@ signals:
 
 private:
     void loadModel(const QString &path);
-    void processNode(aiNode *node, const aiScene *scene);
-    Mesh processMesh(aiMesh *mesh, const aiScene *scene);
+    void loadNode(aiNode *node, const aiScene *scene);
+    Mesh loadMesh(aiMesh *mesh, const aiScene *scene);
     QVector<Texture> loadMaterialTexture(aiMaterial *mat,
                                          aiTextureType type,
                                          QString typeName);
-    GLint TextureFromFile(const char * path, QString directory);
+    GLint TextureFromFile(const char * path, QString m_scenePath);
 
-    vector<Mesh> meshes;
-    vector<Texture> textures_loaded;
-    QString directory;
+    vector<Mesh> m_meshes;
+    QVector<Texture> m_texturesLoaded;
+    QString m_scenePath;
     QUrl m_source;
 };
 
