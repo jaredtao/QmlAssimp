@@ -52,7 +52,7 @@ void FBOItem::componentComplete()
     {
         connect( win, &QQuickWindow::sceneGraphInvalidated, this, &FBOItem::releaseRender, Qt::DirectConnection);
     }
-    startTimer(16);
+    startTimer(1);
 
 }
 
