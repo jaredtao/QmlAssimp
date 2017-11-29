@@ -2,13 +2,20 @@
 #define MODEL_H
 
 #include "glfunc.h"
+#include "mesh.h"
+
+#include <QUrl>
+#include <vector>
 #include <QOpenGLShaderProgram>
+
+
 #include "assimp/Importer.hpp"
 #include "assimp/scene.h"
 #include "assimp/postprocess.h"
-#include "mesh.h"
-#include <vector>
-#include <QUrl>
+
+
+
+
 using namespace std;
 class Model : public QObject, protected GLFUNC
 {

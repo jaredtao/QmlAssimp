@@ -12,6 +12,7 @@ void Render::Init(const QSize &size)
 {
     m_size = size;
     initializeOpenGLFunctions();
+
 #ifdef USE_GL_DEBUGGER
     logger.initialize();
     QObject::connect(&logger, &QOpenGLDebugLogger::messageLogged, [=](const QOpenGLDebugMessage &msg){

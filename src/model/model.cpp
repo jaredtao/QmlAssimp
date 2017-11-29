@@ -42,7 +42,7 @@ void Model::loadModel(const QString & path)
 {
     Assimp::Importer importer;
      // SET THIS TO REMOVE POINTS AND LINES -> HAVE ONLY TRIANGLES
-    importer.SetPropertyInteger(AI_CONFIG_PP_SBP_REMOVE, aiPrimitiveType_LINE|aiPrimitiveType_POINT);
+    //    importer.SetPropertyInteger(AI_CONFIG_PP_SBP_REMOVE, aiPrimitiveType_LINE|aiPrimitiveType_POINT);
     // type and aiProcess_Triangulate discompose polygons with more than 3 points in triangles
     // aiProcess_SortByPType makes sure that meshes data are triangles
     const aiScene *scene = importer.ReadFile(path.toStdString(),

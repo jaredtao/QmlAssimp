@@ -61,11 +61,22 @@ RESOURCES += \
     glsl/glsl.qrc
 
 #自动拷贝 文件夹到运行目录
-CONFIG += autoDeploymentDir
+#CONFIG += autoDeploymentDir autoDeploymentFiles
 #这里写到最后一级文件夹
-deployDirs = $$PWD/model/nanosuit
+#deployDirs = $$PWD/model/nanosuit
 
 #自动拷贝 文件到运行目��#CONFIG += autoDeploymentFiles
 #deployFiles = $$PWD/model/nanosuit/nanosuit.obj
+#deployFiles = $$PWD/model/t700.fbx
+#include (deployment.pri)
 
-include (deployment.pri)
+DESTDIR = $$PWD/bin
+
+# 便于构建用的一些属性
+theList = $$split( _PRO_FILE_, / )
+projectPrefix = $$member( theList, -2 )
+
+UI_DIR = $$PWD/bin/build/$$projectPrefix
+MOC_DIR = $$PWD/bin/build/$$projectPrefix
+RCC_DIR = $$PWD/bin/build/$$projectPrefix
+OBJECTS_DIR = $$PWD/bin/build/$$projectPrefix

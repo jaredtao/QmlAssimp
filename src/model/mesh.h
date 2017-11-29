@@ -6,7 +6,11 @@
 #include <QVector2D>
 #include <QString>
 #include <QOpenGLShaderProgram>
+
 #include "assimp/types.h"
+
+
+
 #include "glfunc.h"
 struct Vertex{
     QVector3D Position;
