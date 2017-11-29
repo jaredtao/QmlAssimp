@@ -8,13 +8,9 @@
 #include <vector>
 #include <QOpenGLShaderProgram>
 
-
 #include "assimp/Importer.hpp"
 #include "assimp/scene.h"
 #include "assimp/postprocess.h"
-
-
-
 
 using namespace std;
 class Model : public QObject, protected GLFUNC

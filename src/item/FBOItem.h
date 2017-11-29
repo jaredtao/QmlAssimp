@@ -3,7 +3,7 @@
 #include <QObject>
 #include <QQuickFramebufferObject>
 
-#include "model/model.h"
+#include "model/Model.h"
 #include "Camera.h"
 class Render;
 class FBOItem : public QQuickFramebufferObject

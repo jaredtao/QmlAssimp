@@ -9,7 +9,7 @@
 #include <QOpenGLDebugMessage>
 #include <QObject>
 #include <QTime>
-#include "model/model.h"
+#include "model/Model.h"
 #include "Camera.h"
 class Render :  protected GLFUNC
 {

@@ -15,6 +15,7 @@
 struct Vertex{
     QVector3D Position;
     QVector3D Normal;
+	QVector3D Tangent;
     QVector2D TexCoords;
 };
 struct Texture{

@@ -1,4 +1,4 @@
-#include "mesh.h"
+#include "Mesh.h"
 
 Mesh::Mesh(const QVector<Vertex> &vertices, const QVector<GLuint> &indices, const QVector<Texture> &textures)
     : m_vertices(vertices), m_indices(indices), m_textures(textures)
