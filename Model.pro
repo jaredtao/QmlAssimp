@@ -11,15 +11,17 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = Model
 TEMPLATE = app
 
-ASSIMPPATH = $$PWD/assimp
+ASSIMPPATH = $$PWD/assimp-4.0.0
 INCLUDEPATH +=$${ASSIMPPATH}/include
 DEPENDPATH  +=$${ASSIMPPATH}/include
 win32{
-    LIBS += -L$${ASSIMPPATH}/lib32/ -lassimp
+    CONFIG(debug, debug|release) {
+        LIBS += -L$${ASSIMPPATH}/lib32 -lassimp-vc140-mtd
+    } else {
+        LIBS += -L$${ASSIMPPATH}/lib32 -lassimp-vc140-mt
+    }
 }
-win64{
-    LIBS += -L$${ASSIMPPATH}/lib64/ -lassimp
-}
+
 linux{
     LIBS += -lassimp -lGL
 }
