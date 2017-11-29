@@ -9,8 +9,6 @@
 
 #include "assimp/types.h"
 
-
-
 #include "glfunc.h"
 struct Vertex{
     QVector3D Position;
