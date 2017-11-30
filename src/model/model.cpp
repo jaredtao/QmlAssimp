@@ -6,16 +6,20 @@
 #include <QElapsedTimer>
 void Model::Init()
 {
+#ifdef SHOW_TIME_COST
     QElapsedTimer time;
     time.start();
+#endif
     initializeOpenGLFunctions();
     auto str = m_source.toString();
     if (str.startsWith("qrc:/")) {
         str.remove("qrc:/");
     }
     loadModel(str);
+#ifdef SHOW_TIME_COST
     auto cost = time.elapsed();
     qWarning() << "model load cost" << cost;
+#endif
 }
 void Model::Draw(const QOpenGLShaderProgram & program)
 {
@@ -149,16 +153,25 @@ QVector<Texture> Model::loadMaterialTexture(aiMaterial *mat,
     }
     return textures;
 }
+
 GLint Model::TextureFromFile(const char * path, QString directory)
 {
     QString name = path;
     name =directory + "/" + name;
     GLuint textureID;
     glGenTextures(1, &textureID);
+#ifdef SHOW_TIME_COST
+    static uint sumImageLoadCost = 0;
     QElapsedTimer time;
     time.start();
+#endif
     QImage image(name);
-    qWarning() << "QImage create cost" << time.elapsed() << image.size() << name;
+
+#ifdef SHOW_TIME_COST
+    auto cost = time.elapsed();
+    sumImageLoadCost += cost;
+    qWarning() << "QImage create cost" << cost << ",total cost" << sumImageLoadCost << image.size() << name;
+#endif
     glBindTexture(GL_TEXTURE_2D, textureID);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, image.width(), image.height(),
                  0, GL_RGB, GL_UNSIGNED_BYTE, image.bits());
