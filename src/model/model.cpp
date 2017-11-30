@@ -155,7 +155,10 @@ GLint Model::TextureFromFile(const char * path, QString directory)
     name =directory + "/" + name;
     GLuint textureID;
     glGenTextures(1, &textureID);
+    QElapsedTimer time;
+    time.start();
     QImage image(name);
+    qWarning() << "QImage create cost" << time.elapsed() << image.size() << name;
     glBindTexture(GL_TEXTURE_2D, textureID);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, image.width(), image.height(),
                  0, GL_RGB, GL_UNSIGNED_BYTE, image.bits());

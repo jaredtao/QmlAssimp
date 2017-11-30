@@ -16,12 +16,9 @@ INCLUDEPATH +=$${ASSIMPPATH}/include
 DEPENDPATH  +=$${ASSIMPPATH}/include
 win32{
     LIBS += -L$${ASSIMPPATH}/lib32/ -lassimp
-}
-win64{
-    LIBS += -L$${ASSIMPPATH}/lib64/ -lassimp
-}
-linux{
-    LIBS += -lassimp -lGL
+} else {
+    CONFIG += link_pkgconfig
+    PKGCONFIG += assimp
 }
 
 # The following define makes your compiler emit warnings if you use

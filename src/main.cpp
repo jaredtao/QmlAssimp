@@ -12,6 +12,7 @@ int main(int argc, char *argv[])
     qSetMessagePattern("log[%{file} %{function} %{line}] %{message}");
 
     QApplication a(argc, argv);
+#ifndef Q_PROCESSPR_ARM
     //![1] set OpenGL Format
     QSurfaceFormat fmt = QSurfaceFormat::defaultFormat();
     fmt.setVersion(3, 3);
@@ -21,7 +22,7 @@ int main(int argc, char *argv[])
 #endif
     QSurfaceFormat::setDefaultFormat(fmt);
     //![1]
-
+#endif
     qmlRegisterType<FBOItem>("J3D", 1, 0, "FBOItem");
     qmlRegisterType<JCamera>("J3D", 1, 0, "JCamera");
     qmlRegisterType<JKeyCamera>("J3D", 1, 0, "JKeyCamera");
