@@ -3,33 +3,57 @@
 #include <QDebug>
 #include <QQmlFile>
 #include <QFileInfo>
-#include <QElapsedTimer>
+#include <QTime>
+
+class Time {
+public:
+	void start() 
+	{
+#ifdef SHOW_TIME_COST
+		mTime.start();
+#endif
+	}
+	void stop(const QString &info) 
+	{
+#ifdef SHOW_TIME_COST
+		qWarning() << info << "cost time(ms):" << mTime.elapsed();
+#else
+		Q_UNUSED(info)
+#endif
+	}
+
+#ifdef SHOW_TIME_COST
+private:
+	QTime mTime;
+#endif
+
+};
+Time gTime;
 void Model::Init()
 {
-#ifdef SHOW_TIME_COST
-    QElapsedTimer time;
-    time.start();
-#endif
+	gTime.start();
+
     initializeOpenGLFunctions();
     auto str = m_source.toString();
     if (str.startsWith("qrc:/")) {
         str.remove("qrc:/");
     }
     loadModel(str);
-#ifdef SHOW_TIME_COST
-    auto cost = time.elapsed();
-    qWarning() << "model load cost" << cost;
-#endif
+	gTime.stop("model load");
 }
 void Model::Draw(const QOpenGLShaderProgram & program)
 {
-    }
+	auto count = m_meshes.size();
+	for (auto i = 0; i < count; ++i) {
+		m_meshes[i].Draw(program);
+	}
 }
 
 void Model::setSource(const QUrl &source)
 {
+	if (m_source == source)
         return;
-
+	m_source = source;
     emit sourceChanged(m_source);
 }
 
@@ -39,8 +63,7 @@ const QUrl &Model::source() const
 }
 void Model::loadModel(const QString & path)
 {
-	QElapsedTimer time;
-	time.start();
+	gTime.start();
 	Assimp::Importer importer;
 	// SET THIS TO REMOVE POINTS AND LINES -> HAVE ONLY TRIANGLES
 	importer.SetPropertyInteger(AI_CONFIG_PP_SBP_REMOVE, aiPrimitiveType_LINE | aiPrimitiveType_POINT);
@@ -55,15 +78,18 @@ void Model::loadModel(const QString & path)
 		qDebug() << "ERROR::ASSIMP " << importer.GetErrorString();
 		return;
 	}
-	qWarning() << "Importer readFile cost" << time.elapsed();
+
+	gTime.stop("Assimp::Importer ReadFile");
+	
 	m_scenePath = QFileInfo(path).absolutePath();
 
+	gTime.start();
 	loadScene(scene);
+	gTime.stop("load Scene");
 }
 
 void Model::loadScene(const aiScene * scene)
 {
-
 	for (auto i = 0; i < scene->mNumMeshes; ++i) {
 		const auto * mesh = scene->mMeshes[i];
 		QVector<Vertex> vertices;
@@ -128,10 +154,11 @@ QVector<Texture> Model::loadMaterialTexture(aiMaterial *mat,
 		}
 		if (!skip) {
 			Texture texture;
-			QElapsedTimer time;
-			time.start();
+
+			gTime.start();
 			texture.id = TextureFromFile(str.C_Str(), this->m_scenePath);
-			qWarning() << "load texture cost " << time.elapsed() << str.C_Str();
+			gTime.stop("load texture " + QString(str.C_Str()));
+
 			texture.type = typeName;
 			textures.push_back(texture);
 		}
@@ -145,10 +172,10 @@ GLint Model::TextureFromFile(const char * path, QString directory)
 	name = directory + "/" + name;
 	GLuint textureID;
 	glGenTextures(1, &textureID);
-	QElapsedTimer time;
-	time.start();
+
+	gTime.start();
 	QImage image(name);
-	qWarning() << "QImage load image" << path << " cost:" << time.elapsed();
+	gTime.stop("QImage load image " + name);
 	glBindTexture(GL_TEXTURE_2D, textureID);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, image.width(), image.height(),
 		0, GL_RGB, GL_UNSIGNED_BYTE, image.bits());
