@@ -6,39 +6,37 @@
 #include <QElapsedTimer>
 void Model::Init()
 {
-	QElapsedTimer time;
-	time.start();
-	initializeOpenGLFunctions();
-	auto str = m_source.toString();
-	if (str.startsWith("qrc:/")) {
-		str.remove("qrc:/");
-	}
-	loadModel(str);
-	auto cost = time.elapsed();
-	qWarning() << "model load cost" << cost;
+#ifdef SHOW_TIME_COST
+    QElapsedTimer time;
+    time.start();
+#endif
+    initializeOpenGLFunctions();
+    auto str = m_source.toString();
+    if (str.startsWith("qrc:/")) {
+        str.remove("qrc:/");
+    }
+    loadModel(str);
+#ifdef SHOW_TIME_COST
+    auto cost = time.elapsed();
+    qWarning() << "model load cost" << cost;
+#endif
 }
 void Model::Draw(const QOpenGLShaderProgram & program)
 {
-	int count = m_meshes.size();
-	for (int i = 0; i < count; ++i) {
-		m_meshes[i].Draw(program);
-	}
+    }
 }
 
 void Model::setSource(const QUrl &source)
 {
-	if (m_source == source)
-		return;
+        return;
 
-	m_source = source;
-	emit sourceChanged(m_source);
+    emit sourceChanged(m_source);
 }
 
 const QUrl &Model::source() const
 {
-	return m_source;
+    return m_source;
 }
-
 void Model::loadModel(const QString & path)
 {
 	QElapsedTimer time;
@@ -62,14 +60,15 @@ void Model::loadModel(const QString & path)
 
 	loadScene(scene);
 }
+
 void Model::loadScene(const aiScene * scene)
 {
+
 	for (auto i = 0; i < scene->mNumMeshes; ++i) {
 		const auto * mesh = scene->mMeshes[i];
 		QVector<Vertex> vertices;
 		QVector<GLuint> indices;
 		QVector<Texture> textures;
-
 		//load  vertex
 		const aiVector3D zeroVector(0.0f, 0.0f, 0.0f);
 		Vertex ver;
@@ -84,7 +83,6 @@ void Model::loadScene(const aiScene * scene)
 			ver.Tangent = QVector3D(pTangent->x, pTangent->y, pTangent->z);
 			vertices.push_back(ver);
 		}
-
 		//load indices
 		for (unsigned int j = 0; j < mesh->mNumFaces; ++j) {
 			const auto & face = mesh->mFaces[j];
@@ -92,7 +90,6 @@ void Model::loadScene(const aiScene * scene)
 			indices.push_back(face.mIndices[1]);
 			indices.push_back(face.mIndices[2]);
 		}
-
 		//load texture
 		if (mesh->mMaterialIndex >= 0) {
 			aiMaterial *material = scene->mMaterials[mesh->mMaterialIndex];
@@ -141,6 +138,7 @@ QVector<Texture> Model::loadMaterialTexture(aiMaterial *mat,
 	}
 	return textures;
 }
+
 GLint Model::TextureFromFile(const char * path, QString directory)
 {
 	QString name = path;

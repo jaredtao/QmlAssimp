@@ -8,8 +8,8 @@ JCamera::JCamera(QObject *parent)
       m_up(0, 1, 0),
       m_viewRect(0, 0, 0, 0),
       m_aspectRatio(1),
-      m_nearPlane(1),
       m_farPlane(1000),
+      m_nearPlane(1),
       m_fieldOfView(45)
 {
     calculateProjectMatrix();

@@ -3,7 +3,7 @@
 #include <QDebug>
 #include <QJsonObject>
 #include <QThread>
-Render::Render(JCamera *camera, Model *model) : m_camera(camera), m_model(model)
+Render::Render(JCamera *camera, Model *model) : m_model(model), m_camera(camera)
 {
     qDebug() << "Render construct" << this;
     m_fps = 60;
