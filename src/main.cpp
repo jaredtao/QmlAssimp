@@ -5,7 +5,7 @@
 #include <QSplashScreen>
 #include <QScreen>
 #include "item/FBOItem.h"
-#include "model/model.h"
+#include "model/Model.h"
 #include "src/item/Camera.h"
 int main(int argc, char *argv[])
 {

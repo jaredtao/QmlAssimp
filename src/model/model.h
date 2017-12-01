@@ -2,7 +2,7 @@
 #define MODEL_H
 
 #include "glfunc.h"
-#include "mesh.h"
+#include "Mesh.h"
 
 #include <QUrl>
 #include <vector>
