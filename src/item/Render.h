@@ -19,14 +19,11 @@ public:
     Render & operator=(const Render & other) = delete;
     void Init(const QSize &size);
     void Paint();
-    qreal GetFPS();
 private:
     void initShader();
     void initMatrixs();
     void initVertices();
 
-    void calcFPS();
-    void updateFPS(qreal );
 private:
     Model *m_model = nullptr;
     JCamera *m_camera = nullptr;
@@ -35,7 +32,6 @@ private:
     QMatrix4x4 m_ModelMatrix, m_mvpMatrix;
     QTime m_time;
     QSize m_size;
-    qreal m_fps;
 #ifdef USE_GL_DEBUGGER
     QOpenGLDebugLogger logger;
 #endif

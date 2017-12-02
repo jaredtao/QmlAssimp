@@ -5,8 +5,6 @@
 #include <QThread>
 Render::Render(JCamera *camera, Model *model) : m_model(model), m_camera(camera)
 {
-    qDebug() << "Render construct" << this;
-    m_fps = 60;
 }
 void Render::Init(const QSize &size)
 {
@@ -22,7 +20,7 @@ void Render::Init(const QSize &size)
 #endif
 
     glViewport(0, 0, size.width(), size.height());
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
     glEnable(GL_DEPTH_TEST);
     initShader();
     initMatrixs();
@@ -35,23 +33,20 @@ void Render::Init(const QSize &size)
 
 void Render::Paint()
 {
+    const auto deltaTime = m_time.elapsed();
+    m_time.start();
+
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+    glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
     m_program.bind();
     if (m_camera) {
-        m_camera->sync();
+        m_camera->sync(deltaTime);
         m_mvpMatrix = m_camera->projectMatrix() * m_camera->viewMatrix() * m_ModelMatrix;
         m_program.setUniformValue("mvpMat", m_mvpMatrix);
     }
     if (m_model) {
         m_model->Draw(m_program);
     }
-//    calcFPS();
-}
-
-qreal Render::GetFPS()
-{
-    return m_fps;
 }
 
 void Render::initShader()
@@ -70,6 +65,8 @@ void Render::initShader()
 void Render::initMatrixs()
 {
     m_ModelMatrix.setToIdentity();
+	m_ModelMatrix.translate(0.0f, -1.75f, 0.0f);
+	m_ModelMatrix.scale(0.2f, 0.2f, 0.2f);
     if (m_camera) {
         m_camera->sync();
     }
@@ -77,22 +74,4 @@ void Render::initMatrixs()
 
 void Render::initVertices()
 {
-
-}
-
-void Render::calcFPS()
-{
-    static int frame = 0;
-    frame++;
-    if (frame > 10) {
-        qreal elasped = m_time.elapsed();
-        updateFPS(frame * 1000.0/ elasped );
-        m_time.restart();
-        frame = 0;
-    }
-}
-void Render::updateFPS(qreal v)
-{
-    m_fps = v;
-    //    qWarning() << "FPS: " << m_fps;
 }

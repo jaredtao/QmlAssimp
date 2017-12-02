@@ -78,6 +78,7 @@ void Model::loadModel(const QString & path)
 		aiProcess_CalcTangentSpace |
 		aiProcess_Triangulate |
 		aiProcess_JoinIdenticalVertices |
+        aiProcess_FlipUVs |
 		aiProcess_SortByPType);
 	if (!scene || scene->mFlags == AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
 		qDebug() << "ERROR::ASSIMP " << importer.GetErrorString();

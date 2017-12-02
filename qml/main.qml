@@ -8,7 +8,6 @@ Item {
     Image {
         anchors.fill: parent
         source:"qrc:/bg.jpg"
-
     }
 
     FBOItem {
@@ -19,24 +18,41 @@ Item {
         focus: true
         Keys.enabled: true
         Keys.onPressed: {
-            camera.move(event.key)
+            camera.keyPress(event.key)
+            event.accepted = true
         }
+        Keys.onReleased: {
+            camera.keyRelease(event.key)
+            event.accepted = true
+        }
+
         JKeyCamera {
             id: camera
-            position: Qt.vector3d(0, 8, 22)
-            lookAt: Qt.vector3d(0, 8, 0)
+            position: Qt.vector3d(0, 0, 3.0)
+            front: Qt.vector3d(0, 0, -1)
             up: Qt.vector3d(0, -1, 0)
             aspectRatio: width / height
             nearPlane: 0.1
-            farPlane: 1000
+            farPlane: 100
             fieldOfView: 45
-            speed: 0.01
+            speed: 1
         }
         Model {
             source: "nanosuit/nanosuit.obj"
         }
     }
-
+    MouseArea {
+        anchors.fill: fboItem
+        onPressed: {
+            camera.mousePress(mouseX, mouseY)
+        }
+        onPositionChanged: {
+            camera.mouseMove(mouseX, mouseY)
+        }
+        onWheel: {
+            camera.wheel(wheel.angleDelta)
+        }
+    }
     Row {
         anchors{
             bottom:parent.bottom

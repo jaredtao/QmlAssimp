@@ -1,11 +1,14 @@
 #pragma once
 #include <QMatrix4x4>
 #include <QVector3D>
+#include <QMouseEvent>
+#include <QKeyEvent>
+#include <QWheelEvent>
 class JCamera: public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QVector3D position READ position WRITE setPosition NOTIFY positionChanged)
-    Q_PROPERTY(QVector3D lookAt READ lookAt WRITE setLookAt NOTIFY lookAtChanged)
+    Q_PROPERTY(QVector3D front READ front WRITE setFront NOTIFY frontChanged)
     Q_PROPERTY(QVector3D up READ up WRITE setUp NOTIFY upChanged)
     Q_PROPERTY(QRectF viewRect READ viewRect WRITE setViewRect NOTIFY viewRectChanged)
     Q_PROPERTY(float aspectRatio READ aspectRatio WRITE setAspectRatio NOTIFY aspectRatioChanged)
@@ -20,15 +23,15 @@ public:
 
     const QMatrix4x4 &projectMatrix();
 
-    void sync();
+    virtual void sync(int deltaTime  = 16);
 
-    const QVector3D& position() const;
+    const QVector3D &position() const;
 
-    const QVector3D& lookAt() const;
+    const QVector3D &front() const;
 
-    const QVector3D& up() const;
+    const QVector3D &up() const;
 
-    const QRectF& viewRect() const;
+    const QRectF &viewRect() const;
 
     float aspectRatio() const;
 
@@ -41,7 +44,7 @@ public:
 public slots:
     void setPosition(const QVector3D &position);
 
-    void setLookAt(const QVector3D &lookAt);
+    void setFront(const QVector3D &front);
 
     void setUp(const QVector3D &up);
 
@@ -58,7 +61,7 @@ public slots:
 signals:
     void positionChanged(const QVector3D &position);
 
-    void lookAtChanged(const QVector3D &lookAt);
+    void frontChanged(const QVector3D &front);
 
     void upChanged(const QVector3D &up);
 
@@ -73,15 +76,17 @@ signals:
     void fieldOfViewChanged(float fieldOfView);
 
     void requestWindowUpdate();
+
 protected:
     void calculateViewMatrix();
 
     void calculateProjectMatrix();
 
     QVector3D m_position;
-    QVector3D m_lookAt;
+    QVector3D m_front;
     QVector3D m_up;
     QRectF m_viewRect;
+
     float m_aspectRatio;
     float m_farPlane;
     float m_nearPlane;
@@ -92,17 +97,43 @@ protected:
     bool m_viewMatrixIsDirty = false;
     bool m_projectMatrixIsDirty = false;
 };
+
 class JKeyCamera : public JCamera {
     Q_OBJECT
+    //照相机移动速度
     Q_PROPERTY(qreal speed READ speed WRITE setSpeed NOTIFY speedChanged)
+    //照相机转动系数
+    Q_PROPERTY(qreal sensitivity READ sensitivity WRITE setSensitivity NOTIFY sensitivityChanged)
+
 public:
-    Q_INVOKABLE void move(Qt::Key key);
+    JKeyCamera(QObject *parent = nullptr);
+    Q_INVOKABLE void mousePress(int x, int y);
+    Q_INVOKABLE void mouseMove(int x, int y);
+
+    Q_INVOKABLE void wheel(QPoint angleDelta);
+
+    Q_INVOKABLE void keyPress(Qt::Key key);
+    Q_INVOKABLE void keyRelease(Qt::Key key);
+
+    virtual void sync(int deltaTime) override;
 
     qreal speed() const;
+    qreal sensitivity() const;
+
 public slots:
     void setSpeed(qreal speed);
+    void setSensitivity(qreal sensitivity);
+
 signals:
     void speedChanged(qreal speed);
+    void sensitivityChanged(qreal sensitivity);
+
 private:
     qreal m_speed = 0.0f;
+    bool m_keys[1024] = {false};
+    QPoint m_lastMousePos;
+    qreal m_sensitivity = 0.05;
+    qreal m_aspectSpeed = 10;
+    qreal m_yaw = -90;
+    qreal m_pitch = 0;
 };
