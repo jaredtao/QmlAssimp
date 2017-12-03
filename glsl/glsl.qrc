@@ -2,5 +2,7 @@
     <qresource prefix="/">
         <file>vertex.vsh</file>
         <file>fragment.fsh</file>
+        <file>lamp.vsh</file>
+        <file>lamp.fsh</file>
     </qresource>
 </RCC>

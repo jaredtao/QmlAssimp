@@ -39,6 +39,7 @@ Item {
         }
         Model {
             source: "nanosuit/nanosuit.obj"
+//            source: "t700.fbx"
         }
     }
     MouseArea {

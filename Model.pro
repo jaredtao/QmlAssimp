@@ -45,7 +45,8 @@ HEADERS += \
     src/model/mesh.h \
     src/item/FBOItem.h \
     src/item/Render.h \
-    src/item/Camera.h
+    src/item/Camera.h \
+    src/stb_image.h
 
 RESOURCES += \
     qml/qml.qrc \
@@ -72,3 +73,8 @@ UI_DIR = $$PWD/bin/build/$$projectPrefix
 MOC_DIR = $$PWD/bin/build/$$projectPrefix
 RCC_DIR = $$PWD/bin/build/$$projectPrefix
 OBJECTS_DIR = $$PWD/bin/build/$$projectPrefix
+
+DISTFILES += \
+    glsl/lamp.vsh \
+    glsl/fragment.fsh \
+    glsl/lamp.fsh

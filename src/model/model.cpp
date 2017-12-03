@@ -4,7 +4,8 @@
 #include <QQmlFile>
 #include <QFileInfo>
 #include <QTime>
-
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
 class Time {
 public:
 	void start() 
@@ -66,12 +67,18 @@ const QUrl &Model::source() const
 {
     return m_source;
 }
+using namespace Assimp;
 void Model::loadModel(const QString & path)
 {
 	gTime.start();
+    Assimp::DefaultLogger::get()->attachStream(new myStream,  Logger::Debugging | Logger::Info |Logger::Err|Logger::Warn);
 	Assimp::Importer importer;
 	// SET THIS TO REMOVE POINTS AND LINES -> HAVE ONLY TRIANGLES
-	importer.SetPropertyInteger(AI_CONFIG_PP_SBP_REMOVE, aiPrimitiveType_LINE | aiPrimitiveType_POINT);
+    importer.SetPropertyInteger(AI_CONFIG_PP_SBP_REMOVE,
+                                aiProcess_CalcTangentSpace       |
+                                aiProcess_Triangulate            |
+                                aiProcess_JoinIdenticalVertices  |
+                                aiProcess_SortByPType);
 	// type and aiProcess_Triangulate discompose polygons with more than 3 points in triangles
 	// aiProcess_SortByPType makes sure that meshes data are triangles
 	const aiScene *scene = importer.ReadFile(path.toStdString(),
@@ -179,17 +186,37 @@ GLint Model::TextureFromFile(const char * path, QString directory)
 	GLuint textureID;
 	glGenTextures(1, &textureID);
 
-	gTime.start();
-	QImage image(name);
-	gTime.stop("QImage load image " + name);
-	glBindTexture(GL_TEXTURE_2D, textureID);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, image.width(), image.height(),
-		0, GL_RGB, GL_UNSIGNED_BYTE, image.bits());
-	glGenerateMipmap(GL_TEXTURE_2D);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glBindTexture(GL_TEXTURE_2D, 0);
+//    gTime.start();
+//    int width = 0, height = 0, n = 0;
+//    unsigned char * data = stbi_load(name.toStdString().c_str(), &width, &height, &n, 3);
+
+//    gTime.stop("stbi_load " + name);
+
+//    glBindTexture(GL_TEXTURE_2D, textureID);
+//    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height,
+//        0, GL_RGB, GL_UNSIGNED_BYTE, data);
+//    glGenerateMipmap(GL_TEXTURE_2D);
+//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+//    glBindTexture(GL_TEXTURE_2D, 0);
+
+//    stbi_image_free(data);
+
+    gTime.start();
+    QImage image(name);
+    image = image.convertToFormat(QImage::Format_RGB888);
+    gTime.stop("QImage load image " + name);
+    glBindTexture(GL_TEXTURE_2D, textureID);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, image.width(), image.height(),
+        0, GL_RGB, GL_UNSIGNED_BYTE, image.bits());
+    glGenerateMipmap(GL_TEXTURE_2D);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
 	return textureID;
 }
