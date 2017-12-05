@@ -67,11 +67,16 @@ const QUrl &Model::source() const
 {
     return m_source;
 }
+
+
 using namespace Assimp;
 void Model::loadModel(const QString & path)
 {
 	gTime.start();
-    Assimp::DefaultLogger::get()->attachStream(new myStream,  Logger::Debugging | Logger::Info |Logger::Err|Logger::Warn);
+#ifdef SHOW_ASSIMP_INFO
+    Assimp::Logger::LogSeverity severity = Assimp::Logger::VERBOSE;
+    Assimp::DefaultLogger::create("", severity, aiDefaultLogStream_STDOUT);
+#endif
 	Assimp::Importer importer;
 	// SET THIS TO REMOVE POINTS AND LINES -> HAVE ONLY TRIANGLES
     importer.SetPropertyInteger(AI_CONFIG_PP_SBP_REMOVE,
@@ -99,6 +104,9 @@ void Model::loadModel(const QString & path)
 	gTime.start();
 	loadScene(scene);
 	gTime.stop("load Scene");
+#ifdef SHOW_ASSIMP_INFO
+    Assimp::DefaultLogger::kill();
+#endif
 }
 
 void Model::loadScene(const aiScene * scene)

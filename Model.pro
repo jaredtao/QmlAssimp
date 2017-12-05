@@ -29,7 +29,10 @@ win32{
 #DEFINES += USE_GL_DEBUGGER
 
 # show time cost
-DEFINES += SHOW_TIME_COST
+#DEFINES += SHOW_TIME_COST
+
+# show assimp info
+DEFINES += SHOW_ASSIMP_INFO
 
 INCLUDEPATH += src
 SOURCES += src/main.cpp \
@@ -78,3 +81,6 @@ DISTFILES += \
     glsl/lamp.vsh \
     glsl/fragment.fsh \
     glsl/lamp.fsh
+lupdate_only {
+    HEADERS +=$${ASSIMPPATH}/include/assimp/*.h
+}

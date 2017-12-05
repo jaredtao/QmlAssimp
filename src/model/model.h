@@ -7,12 +7,17 @@
 #include <QUrl>
 #include <vector>
 #include <QOpenGLShaderProgram>
+
+#ifdef SHOW_ASSIMP_INFO
 #define GLOB_MEASURE_TIME
+#include "assimp/DefaultLogger.hpp"
+#endif
+
+
 #include "assimp/Importer.hpp"
 #include "assimp/scene.h"
 #include "assimp/postprocess.h"
-#include "assimp/LogStream.hpp"
-#include "assimp/DefaultLogger.hpp"
+
 using namespace std;
 class Model : public QObject, protected GLFUNC
 {
@@ -45,44 +50,5 @@ private:
     QVector<Texture> m_textures;
     QString m_scenePath;
     QUrl m_source;
-};
-class myStream : public Assimp::LogStream
-
-{
-
-public:
-
-    // Constructor
-
-    myStream()
-
-    {
-
-        // empty
-
-    }
-
-
-    // Destructor
-
-    ~myStream()
-
-    {
-
-        // empty
-
-    }
-
-
-    // Write womethink using your own functionality
-
-    void write(const char* message)
-
-    {
-
-        qWarning() << message;
-
-    }
-
 };
 #endif // MODEL_H
