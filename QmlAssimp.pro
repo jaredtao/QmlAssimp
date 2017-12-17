@@ -14,13 +14,22 @@ TEMPLATE = app
 ASSIMPPATH = $$PWD/assimp-4.0.0
 INCLUDEPATH +=$${ASSIMPPATH}/include
 DEPENDPATH  +=$${ASSIMPPATH}/include
-win32{
+win32 {
     CONFIG(debug, debug|release) {
         LIBS += -L$${ASSIMPPATH}/lib32 -lassimp-vc140-mtd
     } else {
         LIBS += -L$${ASSIMPPATH}/lib32 -lassimp-vc140-mt
     }
-} else {
+}
+win64 {
+    CONFIG(debug, debug|release) {
+        LIBS += -L$${ASSIMPPATH}/lib32 -lassimp-vc140-mtd
+    } else {
+        LIBS += -L$${ASSIMPPATH}/lib32 -lassimp-vc140-mt
+    }
+}
+
+mingw | linux {
     CONFIG += link_pkgconfig
     PKGCONFIG += assimp
 }
@@ -36,16 +45,16 @@ DEFINES += SHOW_ASSIMP_INFO
 
 INCLUDEPATH += src
 SOURCES += src/main.cpp \
-    src/model/model.cpp \
-    src/model/mesh.cpp \
+    src/model/Model.cpp \
+    src/model/Mesh.cpp \
     src/item/FBOItem.cpp \
     src/item/Render.cpp \
     src/item/Camera.cpp
 
 HEADERS += \
     src/glfunc.h \
-    src/model/model.h \
-    src/model/mesh.h \
+    src/model/Model.h \
+    src/model/Mesh.h \
     src/item/FBOItem.h \
     src/item/Render.h \
     src/item/Camera.h \
@@ -56,15 +65,13 @@ RESOURCES += \
     img/img.qrc \
     glsl/glsl.qrc
 
-#自动拷贝 文件夹到运行目录
-#CONFIG += autoDeploymentDir autoDeploymentFiles
-#这里写到最后一级文件夹
-#deployDirs = $$PWD/model/nanosuit
-
-#自动拷贝 文件到运行目��#CONFIG += autoDeploymentFiles
-#deployFiles = $$PWD/model/nanosuit/nanosuit.obj
-#deployFiles = $$PWD/model/t700.fbx
-#include (deployment.pri)
+DISTFILES += \
+    glsl/lamp.vsh \
+    glsl/fragment.fsh \
+    glsl/lamp.fsh
+lupdate_only {
+    HEADERS +=$${ASSIMPPATH}/include/assimp/*.h
+}
 
 DESTDIR = $$PWD/bin
 
@@ -77,10 +84,3 @@ MOC_DIR = $$PWD/bin/build/$$projectPrefix
 RCC_DIR = $$PWD/bin/build/$$projectPrefix
 OBJECTS_DIR = $$PWD/bin/build/$$projectPrefix
 
-DISTFILES += \
-    glsl/lamp.vsh \
-    glsl/fragment.fsh \
-    glsl/lamp.fsh
-lupdate_only {
-    HEADERS +=$${ASSIMPPATH}/include/assimp/*.h
-}
