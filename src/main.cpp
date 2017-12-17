@@ -1,9 +1,7 @@
-#include <QApplication>
-#include <QSurfaceFormat>
+#include <QGuiApplication>
 #include <QQuickView>
+#include <QSurfaceFormat>
 #include <QQmlApplicationEngine>
-#include <QSplashScreen>
-#include <QScreen>
 #include "item/FBOItem.h"
 #include "model/Model.h"
 #include "src/item/Camera.h"
@@ -11,7 +9,7 @@ int main(int argc, char *argv[])
 {
     qSetMessagePattern("log[%{file} %{function} %{line}] %{message}");
 
-    QApplication a(argc, argv);
+    QGuiApplication a(argc, argv);
 #ifndef Q_PROCESSPR_ARM
     //![1] set OpenGL Format
     QSurfaceFormat fmt = QSurfaceFormat::defaultFormat();
@@ -30,7 +28,7 @@ int main(int argc, char *argv[])
     QQuickView view;
     view.setSource(QUrl(QLatin1Literal("qrc:/main.qml")));
     view.setResizeMode(QQuickView::SizeViewToRootObject);
-    QObject::connect(view.engine(), &QQmlEngine::quit, &a, &QApplication::quit);
+    QObject::connect(view.engine(), &QQmlEngine::quit, &a, &QGuiApplication::quit);
     view.show();
     return a.exec();
 }
